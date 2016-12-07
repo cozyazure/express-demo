@@ -1,13 +1,19 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const bodyParser = require('body-parser');
 
 //set up the view engine using jade
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+//set up 
+app.use(bodyParser.json());
+
 // call routes.js that manage controllers
 require('./routes')(app);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
