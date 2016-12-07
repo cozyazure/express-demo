@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/cozyazure/express-demo#readme",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "pg-promise": "^5.4.7"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
