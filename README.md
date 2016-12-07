@@ -1,5 +1,8 @@
 # Express Demo on REST API
 
+### Requirements
+required node version is `v6.9.1` and npm version is `3.10.8`
+
 ### Clone the project
 ```bash
 $ git clone git@github.com:cozyazure/express-demo.git
