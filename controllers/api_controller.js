@@ -4,11 +4,11 @@ var express = require('express');
 var router = express.Router();
 
 var db = require('../config/db_connection').db_instance;
+var moment = require('moment');
 
 router.get('/object/:key', (req, res, next) => {
     var key = req.params.key;
     var queryTimeStamp = req.query.timestamp;
-    //TODO:perform db transaction here.  Mock for now
     var SQL = "SELECT * FROM keyindex where KEY = $1";
 
     db.oneOrNone(SQL, key).then((result) => {
@@ -25,7 +25,6 @@ router.get('/object/:key', (req, res, next) => {
 })
 
 router.post('/object', (req, res, next) => {
-    //echoback req. TODO: perform db transaction here. Mock for now
     var keyvaluepair = req.body;
     var key = Object.keys(keyvaluepair)[0];
     var value = keyvaluepair[Object.keys(keyvaluepair)[0]];
@@ -72,12 +71,12 @@ router.post('/object', (req, res, next) => {
 
     db.one(insertSQL, tobestored)
         .then(function(result) {
-            var x = {};
-            x[result.key] = result.value;
+            var finalkeyvaluepair = new Object;
+            finalkeyvaluepair[result.key] = result.value;
             return res.json({
                 Message: 'Successfully inserted',
-                KeyValuePair: x,
-                TimeStamp: result.oncreated
+                KeyValuePair: finalkeyvaluepair,
+                TimeStamp: moment(result.oncreated).unix()
             });
         })
         .catch(function(err) {
