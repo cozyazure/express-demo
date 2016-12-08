@@ -3,21 +3,18 @@ CREATE DATABASE keyvaluevault;
 
 \c keyvaluevault;
 
-DROP TABLE keyindex CASCADE;
-DROP TABLE keyvaluepair;
+DROP TABLE keyindex;
+
 
 CREATE TABLE keyindex (
   ID SERIAL PRIMARY KEY,
-  key VARCHAR
+  key VARCHAR,
+  value jsonb,
+  oncreated timestamp default current_timestamp
 );
 
-CREATE TABLE keyvaluepair(
-  keyId integer references keyindex(ID),
-  value jsonb
-);
+INSERT INTO keyindex (key,value)
+  VALUES ('JonSnow','{"default": "you know nothing"}');
 
-INSERT INTO keyindex (key)
-  VALUES ('JonSnow' );
-
-  INSERT INTO keyvaluepair (keyId,value)
-  VALUES (1, '{"default": "you know nothing"}');
+INSERT INTO keyindex (key,value)
+  VALUES ('JonSnow','{"default": "you know nothing again"}');
