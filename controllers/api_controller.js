@@ -9,9 +9,20 @@ var moment = require('moment');
 router.get('/object/:key', (req, res, next) => {
     var key = req.params.key;
     var queryTimeStamp = req.query.timestamp;
-    var SQL = "SELECT * FROM keyindex where KEY = $1";
+    var timeref = moment.utc();
+    if (queryTimeStamp != null) {
+        // timeref = moment.unix(queryTimeStamp);
+        timeref = moment(queryTimeStamp, 'X').format('YYYY-MM-DDT00:00:00.000');
+        console.log('timeref', timeref);
+    }
 
-    db.oneOrNone(SQL, key).then((result) => {
+    var queryobject = {
+        "key": key,
+        "timeref": timeref
+    };
+    var SQL = 'SELECT * FROM keyindex WHERE key = ${key} ORDER BY (age(oncreated,${timeref})) ASC LIMIT 1';
+
+    db.oneOrNone(SQL, queryobject).then((result) => {
             if (result === null) {
                 return res.json({ "ErrorMessage": "No such key exists" });
             }
@@ -67,7 +78,7 @@ router.post('/object', (req, res, next) => {
     }
     var insertSQL = 'INSERT into keyindex(key,value)' +
         'VALUES(${key},${value})' +
-        'RETURNING key,value,oncreated'
+        'RETURNING *'
 
     db.one(insertSQL, tobestored)
         .then(function(result) {
