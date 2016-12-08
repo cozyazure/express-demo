@@ -53,27 +53,42 @@ router.post('/object', (req, res, next) => {
         return res.json({ "ErrorMessage": "The key shouldn't have whitespaces" });
     }
 
-    //check if key exists
-    var SQL = "SELECT * FROM keyindex where KEY = $1";
+    //if the value is type of string, serialize to using default
+    var tobestored = {};
+    if (typeof(value) === 'string') {
+        tobestored = {
+            "key": key,
+            "value": { "default": value }
+        }
+    } else {
+        tobestored = {
+            "key": key,
+            "value": value
+        }
+    }
+    var insertSQL = 'INSERT into keyindex(key,value)' +
+        'VALUES(${key},${value})' +
+        'RETURNING key,value,oncreated'
 
-    db.oneOrNone(SQL, key).then((result) => {
-            if (result === null) {
-                //key doesnt exist, add
-            } else {
-                //update
-            }
+    db.one(insertSQL, tobestored)
+        .then(function(result) {
+            var x = {};
+            x[result.key] = result.value;
+            return res.json({
+                Message: 'Successfully inserted',
+                KeyValuePair: x,
+                TimeStamp: result.oncreated
+            });
         })
-        .catch((error) => {
-            ResolveDbError(error, res);
-        })
+        .catch(function(err) {
+            return ResolveDbError(err, res);
+        });
 
-
-    return res.json(req.body);
+    // return res.json(req.body);
 })
 
 //helper functions
 function ResolveDbError(error, resFunc) {
-
     return resFunc.json({
         "ErrorName": error.name,
         "ErrorCode": error.code,
