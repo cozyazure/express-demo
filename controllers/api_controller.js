@@ -28,7 +28,30 @@ router.get('/object/:key', (req, res, next) => {
 
 router.post('/object', (req, res, next) => {
     //echoback req. TODO: perform db transaction here. Mock for now
-    res.json(req.body);
+    var keyvaluepair = req.body;
+    //check if req is of json and has only one key, if not, throw error
+    if (typeof(keyvaluepair) !== 'object' || keyvaluepair === null || Object.keys(keyvaluepair).length < 1) {
+        return res.json({ "ErrorMessage": "Please submit at least one key value pair in json form" });
+    }
+    //check if value has more than one key, if not, throw error
+    if (Object.keys(keyvaluepair).length != 1) {
+        return res.json({ "ErrorMessage": "Please submit only one key value pair" });
+    }
+    //check if the value of key is either string or object
+    var value = keyvaluepair[Object.keys(keyvaluepair)[0]];
+    if (typeof(value) !== 'string') {
+        if (typeof(value) !== 'object') {
+            return res.json({ "ErrorMessage": "Type of value submitted must be either a string or a json object." });
+        }
+        if (value === null || Object.keys(value).length < 1) {
+            return res.json({ "ErrorMessage": "The value json object cannot be null or empty object." });
+        }
+    }
+
+
+
+
+    return res.json(req.body);
 })
 
 //helper functions
