@@ -10,11 +10,14 @@ CREATE TABLE keyindex (
   ID SERIAL PRIMARY KEY,
   key VARCHAR,
   value jsonb,
-  oncreated timestamp default current_timestamp
+  oncreated bigint
 );
 
-INSERT INTO keyindex (key,value)
-  VALUES ('JonSnow','{"default": "you know nothing"}');
+INSERT INTO keyindex (key,value,oncreated)
+  VALUES ('JonSnow','{"default": "you know nothing"}',1481250444);
 
-INSERT INTO keyindex (key,value)
-  VALUES ('JonSnow','{"default": "you know nothing again"}');
+INSERT INTO keyindex (key,value, oncreated)
+  VALUES ('JonSnow','{"default": "you know nothing again"}', 1481250481);
+
+  INSERT INTO keyindex (key,value, oncreated)
+  VALUES ('JonSnow','{"default": "you know nothing really"}', 1481250485);

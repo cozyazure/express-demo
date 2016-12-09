@@ -5,22 +5,17 @@ var router = express.Router();
 
 var db = require('../config/db_connection').db_instance;
 var moment = require('moment');
-
 router.get('/object/:key', (req, res, next) => {
     var key = req.params.key;
     var queryTimeStamp = req.query.timestamp;
-    var timeref = moment.utc();
-    if (queryTimeStamp != null) {
-        // timeref = moment.unix(queryTimeStamp);
-        timeref = moment(queryTimeStamp, 'X').format('YYYY-MM-DDT00:00:00.000');
-        console.log('timeref', timeref);
-    }
 
     var queryobject = {
         "key": key,
-        "timeref": timeref
+        "timeref": queryTimeStamp == null ? moment().unix() : queryTimeStamp
     };
-    var SQL = 'SELECT * FROM keyindex WHERE key = ${key} ORDER BY (age(oncreated,${timeref})) ASC LIMIT 1';
+
+    // var SQL = 'SELECT * FROM keyindex WHERE key = $(key) AND oncreated <= $(timeref)::bigint LIMIT 1;';
+    var SQL = 'SELECT * FROM keyindex WHERE key = $(key) AND (oncreated <= $(timeref)) ORDER BY oncreated DESC LIMIT 1';
 
     db.oneOrNone(SQL, queryobject).then((result) => {
             if (result === null) {
@@ -64,37 +59,30 @@ router.post('/object', (req, res, next) => {
     }
 
     //if the value is type of string, serialize to using default
-    var tobestored = {};
-    if (typeof(value) === 'string') {
-        tobestored = {
-            "key": key,
-            "value": { "default": value }
-        }
-    } else {
-        tobestored = {
-            "key": key,
-            "value": value
-        }
-    }
-    var insertSQL = 'INSERT into keyindex(key,value)' +
-        'VALUES(${key},${value})' +
+    var tobestored = {
+        "key": key,
+        value: typeof(value) === 'string' ? { 'default': value } : value,
+        oncreated: moment().unix()
+    };
+
+    var insertSQL = 'INSERT INTO keyindex(key,value,oncreated)' +
+        'VALUES(${key},${value},${oncreated})' +
         'RETURNING *'
 
     db.one(insertSQL, tobestored)
         .then(function(result) {
+            console.log(result);
             var finalkeyvaluepair = new Object;
             finalkeyvaluepair[result.key] = result.value;
             return res.json({
                 Message: 'Successfully inserted',
                 KeyValuePair: finalkeyvaluepair,
-                TimeStamp: moment(result.oncreated).unix()
+                TimeStamp: parseInt(result.oncreated)
             });
         })
         .catch(function(err) {
             return ResolveDbError(err, res);
         });
-
-    // return res.json(req.body);
 })
 
 //helper functions
