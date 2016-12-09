@@ -5,17 +5,17 @@ const router = express.Router();
 
 const db = require('../config/db_connection').db_instance;
 const moment = require('moment');
+
 router.get('/object/:key', (req, res, next) => {
-    var key = req.params.key;
-    var queryTimeStamp = req.query.timestamp;
     var queryobject = {
-        "key": key,
-        "timeref": queryTimeStamp == null ? moment().valueOf() : queryTimeStamp
+        "key": req.params.key,
+        "timeref": req.query.timestamp == null ? moment().valueOf() : req.query.timestamp
     };
     var SQL = 'SELECT * FROM keyindex WHERE key = $(key) AND (oncreated <= $(timeref)) ORDER BY oncreated DESC LIMIT 1';
     db.oneOrNone(SQL, queryobject).then((result) => {
+            //no matchin results, return 401
             if (result === null) {
-                return res.json({ "ErrorMessage": "No such key exists" });
+                return res.status(401).json({ "ErrorMessage": "No such key exists" });
             }
             return res.json(CastDtoFromOrm(result, 'READ'));
         })
@@ -26,14 +26,16 @@ router.get('/object/:key', (req, res, next) => {
 
 router.post('/object', (req, res, next) => {
     var sanitized = SanitizeInput(req.body);
+    //sanitization failed, stop operation and return;
     if (sanitized.ErrorMessage != null) {
         return res.status(500).json(sanitized);
     }
+    //Massage data into SQL Schema like
     var tobestored = ProccessInsertSql(sanitized);
     var insertSQL = 'INSERT INTO keyindex(key,value,oncreated)' +
         'VALUES(${key},${value},${oncreated})' +
-        'RETURNING *'
-
+        'RETURNING *';
+    //insert to SQL
     db.one(insertSQL, tobestored)
         .then(function(result) {
             res.json(CastDtoFromOrm(result, 'WRITE'));
