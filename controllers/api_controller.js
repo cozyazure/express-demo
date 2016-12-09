@@ -17,7 +17,7 @@ router.get('/object/:key', (req, res, next) => {
             if (result === null) {
                 return res.json({ "ErrorMessage": "No such key exists" });
             }
-            return res.json(result);
+            return res.json(CastDtoFromOrm(result, 'READ'));
         })
         .catch((error) => {
             ResolveDbError(error, res);
@@ -36,7 +36,7 @@ router.post('/object', (req, res, next) => {
 
     db.one(insertSQL, tobestored)
         .then(function(result) {
-            res.json(DisplayReceiptAfterInsert(result));
+            res.json(CastDtoFromOrm(result, 'WRITE'));
         })
         .catch(function(err) {
             return ResolveDbError(err, res);
@@ -98,14 +98,43 @@ function ProccessInsertSql(keyvaluepair) {
     };
 }
 
-function DisplayReceiptAfterInsert(resultFromDb) {
+function CastDtoFromOrm(resultFromDb, ReadOrWrite) {
     var finalkeyvaluepair = new Object;
     finalkeyvaluepair[resultFromDb.key] = resultFromDb.value;
+    var opsMessage = "";
+    switch (ReadOrWrite) {
+        case 'READ':
+            {
+                opsMessage = 'Successfully retrieved!';
+                break;
+            }
+        case 'WRITE':
+            {
+                opsMessage = "Successfully inserted!";
+                break
+            }
+        default:
+            {
+                opsMessage = "NO OPS FOUND";
+            }
+    }
+
     return {
-        Message: 'Successfully inserted',
-        KeyValuePair: finalkeyvaluepair,
+        Message: opsMessage,
+        KeyValuePair: CastKeyValuePairAsDto(finalkeyvaluepair),
         TimeStamp: parseInt(resultFromDb.oncreated)
     };
+}
+
+function CastKeyValuePairAsDto(keyvaluepair) {
+    var key = Object.keys(keyvaluepair)[0];
+    var value = keyvaluepair[Object.keys(keyvaluepair)[0]];
+    if (value.default !== undefined && value.default !== null) {
+        value = value.default
+    }
+    var returnObj = new Object;
+    returnObj[key] = value;
+    return returnObj;
 }
 
 module.exports = router;
