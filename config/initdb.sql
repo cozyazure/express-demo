@@ -14,7 +14,7 @@ CREATE TABLE keyindex (
 );
 
 INSERT INTO keyindex (key,value,oncreated)
-  VALUES ('JonSnow','{"default": "you know nothing"}',1481250444);
+  VALUES ('JonSnow','{"default": "you know nothing"}',1481250443);
 
 INSERT INTO keyindex (key,value, oncreated)
   VALUES ('JonSnow','{"default": "you know nothing again"}', 1481250481);

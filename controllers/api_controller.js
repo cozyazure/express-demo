@@ -1,9 +1,9 @@
 'use strict';
 
 const express = require('express');
+const app = express();
 const router = express.Router();
-
-const db = require('../config/db_connection').development;
+const db = require('../config/db_connection')[app.get('env')];
 const moment = require('moment');
 
 router.get('/object/:key', (req, res, next) => {
