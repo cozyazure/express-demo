@@ -13,8 +13,7 @@ app.use(bodyParser.json());
 // call routes.js that manage controllers
 require('./routes')(app);
 
-
-
+// app.set('db_instance', "helloworld");
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -47,4 +46,4 @@ app.use(function(err, req, res, next) {
 
 
 
-module.exports = app;
+module.exports = app

@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const db = require('../config/db_connection').db_instance;
+const db = require('../config/db_connection').development;
 const moment = require('moment');
 
 router.get('/object/:key', (req, res, next) => {
@@ -15,7 +15,7 @@ router.get('/object/:key', (req, res, next) => {
     db.oneOrNone(SQL, queryobject).then((result) => {
             //no matchin results, return 401
             if (result === null) {
-                return res.status(401).json({ "ErrorMessage": "No such key exists" });
+                return res.status(404).json({ "ErrorMessage": "No such key exists" });
             }
             return res.json(CastDtoFromOrm(result, 'READ'));
         })

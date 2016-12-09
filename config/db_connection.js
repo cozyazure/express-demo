@@ -6,10 +6,13 @@ var options = {
 };
 
 var pgp = require('pg-promise')(options);
-var connectionString = 'postgres://postgres:password@localhost:5432/keyvaluevault';
-var db = pgp(connectionString);
+var devConnectionString = 'postgres://postgres:password@localhost:5432/keyvaluevault';
+var prodConnectionString = 'postgres://jxglyuvbxhqtaa:drHWOW7i-zE9d70DPCyo9kMcoV@ec2-54-243-187-133.compute-1.amazonaws.com:5432/dd5g3cd59786rr';
+var db_development = pgp(devConnectionString);
+var db_production = pgp(prodConnectionString);
 
 
 module.exports = {
-    db_instance: db
+    development: db_development,
+    production: db_production
 }
