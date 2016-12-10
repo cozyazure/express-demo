@@ -5,15 +5,15 @@ const request = require('supertest');
 const db = require('../config/db_connection').development;
 
 describe('db_sanitization_test', () => {
-    const url = 'localhost:3000/api/object';
     before((done) => {
+        server = require('../mockserver');
         done();
     });
     describe('POST an empty payload', function() {
         it('should return an error message with "Please submit at least one key value pair in json form"', function(done) {
             var keyvaluepair = {};
-            request(url)
-                .post('')
+            request(server)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(500)
                 .end((error, response) => {
@@ -28,8 +28,8 @@ describe('db_sanitization_test', () => {
                 'key1': "value1",
                 'key2': "value2"
             };
-            request(url)
-                .post('')
+            request(server)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(500)
                 .end((error, response) => {
@@ -43,8 +43,8 @@ describe('db_sanitization_test', () => {
             var keyvaluepair = {
                 'key1': 123
             };
-            request(url)
-                .post('')
+            request(server)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(500)
                 .end((error, response) => {
@@ -58,8 +58,8 @@ describe('db_sanitization_test', () => {
             var keyvaluepair = {
                 'key1': {}
             };
-            request(url)
-                .post('')
+            request(server)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(500)
                 .end((error, response) => {
@@ -73,8 +73,8 @@ describe('db_sanitization_test', () => {
             var keyvaluepair = {
                 'key 1': 'value1'
             };
-            request(url)
-                .post('')
+            request(server)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(500)
                 .end((error, response) => {

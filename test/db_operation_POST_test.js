@@ -7,6 +7,7 @@ const db = require('../config/db_connection').development;
 describe('db_operation_POST_test', () => {
     const url = 'localhost:3000/api/object';
     before((done) => {
+        mockserver = require('../mockserver');
         done();
     });
     describe('POST a keyvalue pair, with "mykey" as key and "myvalue1" as value', function() {
@@ -14,8 +15,8 @@ describe('db_operation_POST_test', () => {
             var keyvaluepair = {
                 'mykey': 'myvalue1'
             };
-            request(url)
-                .post('')
+            request(mockserver)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(200)
                 .end((error, response) => {
@@ -31,8 +32,8 @@ describe('db_operation_POST_test', () => {
             var keyvaluepair = {
                 'mykey': 'myvalue2'
             };
-            request(url)
-                .post('')
+            request(mockserver)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(200)
                 .end((error, response) => {
@@ -60,8 +61,8 @@ describe('db_operation_POST_test', () => {
                     }
                 }
             };
-            request(url)
-                .post('')
+            request(mockserver)
+                .post('/api/object')
                 .send(keyvaluepair)
                 .expect(200)
                 .end((error, response) => {
