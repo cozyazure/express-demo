@@ -1,10 +1,8 @@
 DROP DATABASE IF EXISTS keyvaluevault;
+
 CREATE DATABASE keyvaluevault;
 
 \c keyvaluevault;
-
-DROP TABLE keyindex;
-
 
 CREATE TABLE keyindex (
   ID SERIAL PRIMARY KEY,
@@ -14,10 +12,10 @@ CREATE TABLE keyindex (
 );
 
 INSERT INTO keyindex (key,value,oncreated)
-  VALUES ('JonSnow','{"default": "you know nothing"}',1481250443);
+  VALUES ('JonSnow','{"default": "You know nothing"}',1000000000000);
 
 INSERT INTO keyindex (key,value, oncreated)
-  VALUES ('JonSnow','{"default": "you know nothing again"}', 1481250481);
+  VALUES ('JonSnow','{"default": "And now my watch begins"}', 1000000000003);
 
   INSERT INTO keyindex (key,value, oncreated)
-  VALUES ('JonSnow','{"default": "you know nothing really"}', 1481250485);
+  VALUES ('JonSnow','{"default": "I know, but I still love her"}', 1000000000006);
