@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Express Restful Demo</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link type="text/css" href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link type="text/css" href='https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css' rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        body {
+            padding-top: 70px;
+            /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        }
+        
+        footer {
+            margin: 50px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Express Demo</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="list-group">
+                    <a href="#introduction" class="list-group-item">Introduction</a>
+                    <a href="#usage" class="list-group-item">Usage</a>
+                    <a href="#constraints" class="list-group-item">Constraints</a>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div id="introduction">
+                    <h1>Introduction</h1>
+                    <hr>
+                    <p>This is a project to demonstrate RESTful HTTP API consumption. For simplicity, it only contains <code>GET</code> for retrieving resources and <code>POST</code> for creating/maniuplating resources.
+
+                    </p>
+                    <p>
+                        For these web services, our aim i s to build a version controlled key-value store. The API needs to be able to:
+                        <ol>
+                            <li>Accept a key(string) and value(some json blob/string) and store them. If an existing key is sent, the value should be updated</li>
+                            <li>Accept a key and return the corresponding latest value</li>
+                            <li>When given a key AND a timestamp, return whatever the value of the key at the time was.</li>
+                        </ol>
+                    </p>
+
+                    <p>The constraints are defined at the constraits section. For the full implementation, you can refer to this <a href="https://github.com/cozyazure/express-demo" target="_blank">Github project</a>.</p>
+                </div>
+                <div id="usage">
+                    <h1>Usage</h1>
+                    <hr>
+                    <p>The API endpoint is at <code>/api/object</code>. Altogether, we have two webservices, one as <code>GET</code>to retrieve the resouces and one using <code>POST</code> for creating/updating resources.</p>
+
+                    <h2>POST (Create)</h2>
+                    <h3>Request Object</h3>
+                    <p>To create a key-value pair, simply pass in the key-value pair as the body of the payload in the following format:</p>
+                    <pre class="prettyprint js ">
+{
+    "myKey":"myValue"
+}                </pre>
+                    <p>You can also pass in a valid <code>json</code> object as the value in the key-value pair: </p>
+                    <pre class="prettyprint js ">
+ {
+  "JonSnow": {
+    "HeroName": "Jon Snow, King of North",
+    "HeroAge": "25",
+    "HeroAbility": [{
+      "AbilityName": "Dodging the arrow!",
+      "Cooldown": "Instant"
+    }, {
+      "AbilityName": "Slay the whitewalkers",
+      "Cooldown": "30 seconds"
+    }]
+  }
+}              </pre>
+                    <p>Note that you will have to pass in a proper JSON object as a payload body, as stated in the constraint. If you do not, you will receive a <code>500</code> Internal Server Error. The type of the value in the key-value pair can either
+                        be a <code>string</code> or a valid <code>json</code>. Any other type of format will be rejected.</p>
+
+                    <p></p>
+                    <h3>Response Object</h3>
+                    <p>If you successfully create the object, a response will be returned as indicating the key-value pair you have inserted, and also a timestamp for references: </p>
+                    <pre class="prettyprint js ">
+{
+  "Message": "Successfully inserted!",
+  "KeyValuePair": {
+    "myKey": "myValue"
+  },
+  "TimeStamp": 1481352085110
+}</pre>
+                    <h2>POST (Update)</h2>
+                    <p>If you pass in key-value pair where the key already existed in the database, the value of that particular will be updated. Do not worry about the previous data, you can always retrieve the old data back as long as you have the timestamp.</p>
+                    <pre class="prettyprint js ">
+{
+    "myKey":"I am going to replace the old myValue!"
+}                </pre> And the response:
+                    <pre class="prettyprint js ">
+{
+  "Message": "Successfully inserted!",
+  "KeyValuePair": {
+    "myKey": "I am going to replace the old myValue!"
+  },
+  "TimeStamp": 1481352976747
+}                               </pre>
+                    <h2>GET (Default)</h2>
+                    <p>To retrieve the key that has been created, simply add in the value of key parameters in the URL as parameters, in the format of <code>/api/object/{nameOfKey}</code></p>
+                    <h3>Request URL</h3>
+                    <pre class="prettyprint js ">/api/object/myKey</pre>
+                    <h3>Response Object</h3>
+                    <pre class="prettyprint js ">
+{
+  "Message": "Successfully retrieved!",
+  "KeyValuePair": {
+    "myKey": "I am going to replace the old myValue!"
+  },
+  "TimeStamp": 1481352976747
+} </pre>
+
+                    <h2>GET (with <code>timestamp</code>)</h2>
+                    If you want to retrieve the previous values of certain key-value pair, you can pass in the timestamp when the moment of key-value is created. The format of the request URL will be in the format of <code>/api/object/{nameOfKey}?timestamp={oncreatedtimestamp}</code>
+                    <h3>Request URL</h3>
+                    <pre class="prettyprint js ">/api/object/myKey?timestamp=1481352085110</pre>
+                    <h3>Response Object</h3>
+                    <pre class="prettyprint js ">
+{
+  "Message": "Successfully retrieved!",
+  "KeyValuePair": {
+    "myKey": "myValue"
+  },
+  "TimeStamp": 1481352085110
+}</pre>
+
+                    <p>Note that if the timestamp value supplied is greater than the real timestamp, the server will return the first key-value pair before the timestamp, should there be any. If no stamp is specified, you will always retrieve the latest
+                        value of that key-value pair. Consider the following key-value pair with key <code>myKey</code> but has been updated multiple times:
+                    </p>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                            <th>Cretaed on Timestamp</th>
+                        </tr>
+                        <tr>
+                            <td>myKey</td>
+                            <td>myValue1</td>
+                            <td>1481352085110</td>
+                        </tr>
+                        <tr>
+                            <td>myKey</td>
+                            <td>myValue2</td>
+                            <td>1481352085230</td>
+                        </tr>
+                        <tr>
+                            <td>myKey</td>
+                            <td>myValue3</td>
+                            <td>1481352085450</td>
+                        </tr>
+                        <tr>
+                            <td>myKey</td>
+                            <td>myValue4</td>
+                            <td>1481352085990</td>
+                        </tr>
+                    </table>
+                    Querying results are as follows:
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Query URL</th>
+                            <th>Value returned</th>
+                            <th style="width:40%">Reason</th>
+                        </tr>
+                        <tr>
+                            <td><code>/api/object/myKey</code></td>
+                            <td>myValue4</td>
+                            <td style="width:40%">When no timestamp is specified, the server will return the latest value</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/object/myKey?timestamp=1481352085110</code></td>
+                            <td>myValue1</td>
+                            <td>The timestamp is exact</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/object/myKey?timestamp=1481352085115</code></td>
+                            <td>myValue1</td>
+                            <td>The timestamp is in between <code>1481352085110</code> and <code>1481352085230</code>, so the value at <code>1481352085110</code> will be returned - getting the first key-value pair before the timestamp</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/object/myKey?timestamp=1481352085450</code></td>
+                            <td>myValue3</td>
+                            <td>The timestamp is exact</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/object/myKey?timestamp=1481352085991</code></td>
+                            <td>myValue4</td>
+                            <td>Even though there is no value after <code>1481352085990</code>, the server will still return the first key-value pair before the timestamp, should it exist</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/object/myKey?timestamp=1481352085100</code></td>
+                            <td>Error returned</td>
+                            <td>No such key exist before or during that timestamp</td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="constraints">
+                    <h1>Constraints</h1>
+                    <hr>
+                    <p>There are a few basic assumptions that is made through out the implementation of the API. These assumptions and constraints are made due to the limitation of resources. Most of them are just technical decision, and may differ should
+                        the requirements are different.
+                    </p>
+
+                    <ul>
+                        <li>
+                            <h3>The body of the HTTP request must be in a valid JSON form</h3>
+                            Set the content type to <code>application/json</code>. The payload must be in a valid JSON format. If not, you will receive an error.
+                        </li>
+                        <li>
+                            <h3>The key can contain special characters but not spaces.</h3>
+                            The rational of having this restriction is simply to reduce working on parsing the key. In reality, a space (or a tab, or newline for that matter) will not work as a URL resources. If you want spaces in your key, make sure you Base64 encode it before
+                            creating, and decode it at your end.
+                        </li>
+                        <li>
+                            <h3>The value in the keyvalue pair can only be either <code>string</code> or a valid <code>JSON</code></h3>
+                            Other types such as numbers, boolean, and null objects are not allowed.
+                        </li>
+                        <li>
+                            <h3>Per <code>POST</code> transaction, only one pair of key value pair is allowed</h3>
+                            Just for simplicity and brevity.
+                        </li>
+                        <li>
+                            <h3>Per <code>POST</code> transaction, no empty payload is allowed</h3>
+                            Again, for simplicity and brevity.
+                        </li>
+                        <li>
+                            <h3>The precision of <code>Timestamp</code> is down to millisecond, as per Unix standard</h3>
+                            And hence no implementation for race condition that goes down beyond that precision. If two <code>POST</code> are called at the same time down to milliseconds, the server simply accepts both of them and it's resolve at the
+                            machine level aka both has 0.5 proability of being stored first. If a request of the same key having the same time stamp, the database will choose the one which is last stored.
+                        </li>
+                        <li>
+                            <h3>The server will sleep after 30 minutes of inactivity</h3>
+                            This is a constraint of the services provided by Heroku, due to being free.
+                        </li>
+                        <li>
+                            <h3>The database can only contains 10000 records</h3>
+                            This is the limitation by Heroku services too. I will check the health of the database and reset it once in a while.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+    <div class="container">
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; CozyAzure</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+
+</html>

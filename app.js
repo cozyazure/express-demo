@@ -3,9 +3,10 @@ const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
 
-//set up the view engine using jade
+//set up the view engine using ejs
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
 //set up 
 app.use(bodyParser.json());
