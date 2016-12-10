@@ -66,14 +66,13 @@ function SanitizeInput(keyvaluepair) {
 
     //check if req is of json and has only one key, if not, throw error
     if (typeof(keyvaluepair) !== 'object' || keyvaluepair === null || Object.keys(keyvaluepair).length < 1) {
-        return { "ErrorMessage": "Please submit at least one key value pair in json form" };
+        return { "ErrorMessage": "Please submit at least one key value pair in json form." };
     }
     //check if value has more than one key, if not, throw error
     if (Object.keys(keyvaluepair).length != 1) {
-        return { "ErrorMessage": "Please submit only one key value pair" };
+        return { "ErrorMessage": "Please submit only one key value pair." };
     }
     //check if the value of key is either string or object
-
     if (typeof(value) !== 'string') {
         if (typeof(value) !== 'object') {
             return { "ErrorMessage": "Type of value submitted must be either a string or a json object." };
@@ -84,7 +83,7 @@ function SanitizeInput(keyvaluepair) {
     }
     //the key shouldnt contain spaces too
     if (HasWhiteSpace(key)) {
-        return { "ErrorMessage": "The key shouldn't have whitespaces" };
+        return { "ErrorMessage": "The key shouldn not have whitespaces." };
     }
     return keyvaluepair;
 }
