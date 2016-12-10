@@ -119,7 +119,7 @@ html(lang='en')
             p
               | To create a key-value pair, simply pass in the key-value pair as the body of the payload in the following format:
             pre.
-              \n{
+              {
                   "myKey":"myValue"
               }                              
             p
@@ -127,7 +127,7 @@ html(lang='en')
               code json
               |  object as the value in the key-value pair:
             pre.
-              \n {
+              {
                 "JonSnow": {
                   "HeroName": "Jon Snow, King of North",
                   "HeroAge": "25",
@@ -154,7 +154,7 @@ html(lang='en')
             p
               | If you successfully create the object, a response will be returned as indicating the key-value pair you have inserted, and also a timestamp for references:
             pre.
-              \n{
+              {
                 "Message": "Successfully inserted!",
                 "KeyValuePair": {
                   "myKey": "myValue"
@@ -165,12 +165,12 @@ html(lang='en')
             p
               | If you pass in key-value pair where the key already existed in the database, the value of that particular will be updated. Do not worry about the previous data, you can always retrieve the old data back as long as you have the timestamp.
             pre.
-              \n{
+              {
                   "myKey":"I am going to replace the old myValue!"
               }                              
             |  And the response:
             pre.
-              \n{
+              {
                 "Message": "Successfully inserted!",
                 "KeyValuePair": {
                   "myKey": "I am going to replace the old myValue!"
@@ -183,10 +183,10 @@ html(lang='en')
               code /api/object/{nameOfKey}
             h3 Request URL
             pre.
-              \n/api/object/myKey              
+              /api/object/myKey              
             h3 Response Object
             pre.
-              \n{
+              {
                 "Message": "Successfully retrieved!",
                 "KeyValuePair": {
                   "myKey": "I am going to replace the old myValue!"
@@ -201,10 +201,10 @@ html(lang='en')
             code /api/object/{nameOfKey}?timestamp={oncreatedtimestamp}
             h3 Request URL
             pre.
-              \n/api/object/myKey?timestamp=1481352085110              
+              /api/object/myKey?timestamp=1481352085110              
             h3 Response Object
             pre.
-              \n{
+              {
                 "Message": "Successfully retrieved!",
                 "KeyValuePair": {
                   "myKey": "myValue"
